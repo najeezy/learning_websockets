@@ -139,17 +139,26 @@
     var splitUrl = document.URL.split('/');
     var currentUsername = splitUrl[5];
 
+    // set the connection to the server side
     var socket = io();
 
+    // submitting a message
     $('form').submit(function(event) {
       event.preventDefault();
+
+      // prevents user from sending empty message
       if ($('#m').val() !== '' && $('#m').val().split(' ').length !== $('#m').val().length + 1) {
+
+        // have this client emit the chat message to the server
         socket.emit('chat message', $('#m').val());
       }
       $('#m').val('');
       return false;
     });
 
+    // set up a listener for event from the server.
+    // this will load the page with relevant information
+    // on page load.
     socket.on('load message page', function(msgObj) {
       var users = msgObj.currentUsers;
       var messages = msgObj.messages;
@@ -176,14 +185,25 @@
         }
 
         $('#messages').append('<div>');
+
+        // auto scroll
         $('#messages').scrollTop($('#messages')[0].scrollHeight);
       }
     });
 
+    // set up event for user enter. Add the user to the roomies list
+    // and add a message to the messages list about the entering user.
     socket.on('user enter', function(user) {
       $('<p class="roomies-username">').text(user).appendTo('#users');
+
+      $('<div class="disconnect">')
+        .append('<p class="user-disconnect">' + user + ' just arrived!</p>')
+        .appendTo('#messages');
+
+      $('#users').scrollTop($('#users')[0].scrollHeight);
     });
 
+    // set a listener for chat message events from the server
     socket.on('chat message', function(msgObj) {
       var outerMessage = $('<div class="outer-message">');
       var message = $('<div class="message-bubble">')
@@ -205,6 +225,7 @@
       $('#messages').scrollTop($('#messages')[0].scrollHeight);
     });
 
+    // set listener for leaving user events from the server
     socket.on('leaving user', function(user) {
       var roomies = $('.roomies-username');
 
