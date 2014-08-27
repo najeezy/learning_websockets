@@ -142,7 +142,9 @@
 
     $('form').submit(function(event) {
       event.preventDefault();
-      socket.emit('chat message', $('#m').val());
+      if ($('#m').val() !== '' && $('#m').val().split(' ').length !== $('#m').val().length + 1) {
+        socket.emit('chat message', $('#m').val());
+      }
       $('#m').val('');
       return false;
     });
