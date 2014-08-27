@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+  <title>Chattr</title>
+
+  <style>
+    body {
+      font-family: "Helvetica Neue";
+      text-align: center;
+    }
+
+    #username-form {
+      display: inline-block;
+      margin-top: 200px;
+      height: 500px;
+      width: 700px;
+      text-align: center;
+    }
+
+    input {
+      height: 75px;
+      width: 500px;
+      font-size: 30px;
+      text-align: center;
+      margin-bottom: 10px;
+    }
+
+    #username-button {
+      border: none;
+      color: #702522;
+      background: #FF554E;
+      font-weight: bold;
+      letter-spacing: 10px;
+      font-size: 20px;
+      height: 60px;
+      width: 507px;
+      border-bottom: 3px solid #702522;
+    }
+
+    #chatrooms {
+      display: none;
+      width: 300px;
+      font-size: 40px;
+      margin-top: 200px;
+    }
+
+    a.chatroom {
+      text-decoration: none;
+    }
+
+  </style>
+</head>
+<body>
+
+
+  <div id="username-form">
+    <input id="username" type="text" autocomplete="off" placeholder="Enter a Username">
+    <button id="username-button">SET</button>
+  </div>
+
+  <div id="chatrooms">
+    <a class="chatroom one" href="/chatroom/1/">Chatroom 1</a>
+    <a class="chatroom two" href="/chatroom/2/">Chatroom 2</a>
+  </div>
+
+  <script>
+    $('#username-button').on('click', function() {
+      var chatrooms = $('.chatroom');
+
+      for (var i = 0; i < chatrooms.length; i++) {
+        var link = chatrooms.eq(i).attr('href');
+        chatrooms.eq(i).attr('href', link + $('#username').val());
+      }
+
+      $('#username').val('');
+
+      $('#username-form').hide();
+      $('#chatrooms').css('display', 'inline-block');
+    });
+  </script>
+
+</body>
+</html>

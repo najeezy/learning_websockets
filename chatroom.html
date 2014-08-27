@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
+  <title>Socket.IO chat</title>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font: 13px 'Helvetica Neue';
+    }
+
+    #chatbox {
+      position: relative;
+      left: 20px;
+      top: 20px;
+      width: 700px;
+      height: 500px;
+      outline: 2px solid black;
+    }
+
+    form {
+      position: absolute;
+      bottom: 0;
+    }
+
+    form input {
+      width: 504px;
+      height: 35px;
+    }
+
+    form button {
+      border: none;
+      width: 196px;
+      height: 35px;
+      background: #FF554E;
+      color: whitesmoke;
+    }
+
+    #messages {
+      overflow: auto;
+      display: inline-block;
+      list-style-type: none;
+      height: 465px;
+      width: 500px;
+    }
+
+    #users {
+      display: inline-block;
+      overflow: auto;
+      width: 196px;
+      height: 465px;
+      background: whitesmoke;
+    }
+
+    h2 {
+      margin-left: 10px;
+    }
+
+    .outer-message {
+      border-bottom: 10px;
+    }
+
+    .outer-message-friend {
+      text-align: right
+    }
+
+    .message-bubble {
+      display: inline-block;
+      padding: 10px;
+      max-width: 200px;
+    }
+
+    .message-username {
+      color: gray;
+      font-size: 12px;
+    }
+
+    .user {
+      background: #2C83FF;
+      color: whitesmoke;
+      border-radius: 20px 20px 20px 0;
+    }
+
+    .friend {
+      background: #E0D9DE;
+      border-radius: 20px 20px 0 20px;
+    }
+
+    .roomies-username {
+      background: #90FD7E;
+      color: green;
+      margin-bottom: 5px;
+      border-radius: 10px;
+      margin-left: 10px;
+      margin-right: 10px;
+      padding: 5px;
+    }
+
+    .disconnect {
+      text-align: center;
+      color: gray;
+    }
+
+  </style>
+</head>
+
+
+
+<body>
+
+  <div id="chatbox">
+    <div id="messages"></div>
+    <div id="users">
+      <h2>Roomies</h2>
+    </div>
+    <form action="">
+      <input id="m" autocomplete="off" /><button>Send</button>
+    </form>
+  </div>
+
+
+
+
+  <script>
+    var splitUrl = document.URL.split('/');
+    var currentUsername = splitUrl[5];
+
+    var socket = io();
+
+    $('form').submit(function(event) {
+      event.preventDefault();
+      socket.emit('chat message', $('#m').val());
+      $('#m').val('');
+      return false;
+    });
+
+    socket.on('load message page', function(msgObj) {
+      var users = msgObj.currentUsers;
+      var messages = msgObj.messages;
+
+      for (var i = 0; i < users.length; i++) {
+        $('<p class="roomies-username">').text(users[i]).appendTo('#users');
+      }
+
+      for (var i = 0; i < messages.length; i++) {
+        $('')
+      }
+    });
+
+    socket.on('user enter', function(user) {
+      $('<p class="roomies-username">').text(user).appendTo('#users');
+    });
+
+    socket.on('chat message', function(msgObj) {
+      var outerMessage = $('<div class="outer-message">');
+      var message = $('<div class="message-bubble">')
+        .text(msgObj.message)
+        .appendTo(outerMessage);
+
+      $('<p class="message-username">').text(msgObj.username).appendTo(outerMessage);
+
+      outerMessage.appendTo('#messages');
+
+      if (msgObj.username === currentUsername) {
+        message.addClass('user');
+      } else {
+        message.addClass('friend');
+        outerMessage.addClass('outer-message-friend');
+      }
+
+      $('#messages').append('<div>');
+      $('#messages').scrollTop($('#messages').height());
+    });
+
+    socket.on('leaving user', function(user) {
+      var roomies = $('.roomies-username');
+
+      for (var i = 0; i < roomies.length; i++) {
+        if (roomies.eq(i).text() === user) {
+          roomies.eq(i).remove();
+        }
+      }
+
+      $('<div class="disconnect">')
+        .append('<p class="user-disconnect">' + user + ' has left the room.</p>')
+        .appendTo('#messages');
+
+      $('#messages').scrollTop($('#messages').height());
+    });
+  </script>
+
+</body>
+</html>
