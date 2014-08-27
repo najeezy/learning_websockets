@@ -33,6 +33,7 @@
     form input {
       width: 504px;
       height: 35px;
+      font-size: 15px;
     }
 
     form button {
@@ -41,6 +42,7 @@
       height: 35px;
       background: #FF554E;
       color: whitesmoke;
+      font-size: 15px;
     }
 
     #messages {
@@ -64,28 +66,32 @@
     }
 
     .outer-message {
-      border-bottom: 10px;
+      border-top: 5px;
+      border-bottom: 5px;
     }
 
     .outer-message-friend {
-      text-align: right
+      text-align: right;
     }
 
     .message-bubble {
       display: inline-block;
       padding: 10px;
       max-width: 200px;
+      font-size: 15px;
     }
 
     .message-username {
       color: gray;
       font-size: 12px;
+      margin-left: 5px;
     }
 
     .user {
       background: #2C83FF;
       color: whitesmoke;
       border-radius: 20px 20px 20px 0;
+      margin-left: 5px;
     }
 
     .friend {
@@ -121,7 +127,7 @@
       <h2>Roomies</h2>
     </div>
     <form action="">
-      <input id="m" autocomplete="off" /><button>Send</button>
+      <input id="m" autocomplete="off"  autofocus /><button>Send</button>
     </form>
   </div>
 
@@ -150,7 +156,24 @@
       }
 
       for (var i = 0; i < messages.length; i++) {
-        $('')
+        var outerMessage = $('<div class="outer-message">');
+        var message = $('<div class="message-bubble">')
+          .text(messages[i].message)
+          .appendTo(outerMessage);
+
+        $('<p class="message-username">').text(messages[i].username).appendTo(outerMessage);
+
+        outerMessage.appendTo('#messages');
+
+        if (messages[i].username === currentUsername) {
+          message.addClass('user');
+        } else {
+          message.addClass('friend');
+          outerMessage.addClass('outer-message-friend');
+        }
+
+        $('#messages').append('<div>');
+        $('#messages').scrollTop($('#messages')[0].scrollHeight);
       }
     });
 
@@ -176,7 +199,7 @@
       }
 
       $('#messages').append('<div>');
-      $('#messages').scrollTop($('#messages').height());
+      $('#messages').scrollTop($('#messages')[0].scrollHeight);
     });
 
     socket.on('leaving user', function(user) {
@@ -192,7 +215,7 @@
         .append('<p class="user-disconnect">' + user + ' has left the room.</p>')
         .appendTo('#messages');
 
-      $('#messages').scrollTop($('#messages').height());
+      $('#users').scrollTop($('#users')[0].scrollHeight);
     });
   </script>
 

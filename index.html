@@ -70,7 +70,7 @@
 
       for (var i = 0; i < chatrooms.length; i++) {
         var link = chatrooms.eq(i).attr('href');
-        chatrooms.eq(i).attr('href', link + $('#username').val());
+        chatrooms.eq(i).attr('href', link + $('#username').val().split(' ').join('_'));
       }
 
       $('#username').val('');
