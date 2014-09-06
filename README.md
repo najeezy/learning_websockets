@@ -7,4 +7,4 @@ Technologies used:
 * Express
 * Socket.io
 
-It is hosted on the web at: [wdichattr.herokuapp.com](http://wdichattr.herokuapp.com/)
+check it out at: [wdichattr.herokuapp.com](http://wdichattr.herokuapp.com/)
