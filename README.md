@@ -7,4 +7,4 @@ Technologies used:
 * Express
 * Socket.io
 
-check it out at: [wdichattr.herokuapp.com](http://wdichattr.herokuapp.com/)
+Check it out at: [wdichattr.herokuapp.com](http://wdichattr.herokuapp.com/)
